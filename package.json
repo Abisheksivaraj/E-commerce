@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend":"cd frontend && npm run dev",
+    "backend":"cd server && npm run dev",
+      "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
