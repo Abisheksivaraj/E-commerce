@@ -2,6 +2,7 @@ import { Button, Grid, TextField, Typography, Box } from "@mui/material";
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../config/apiConfig";
 const AdminRegister = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -24,8 +25,8 @@ const AdminRegister = () => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        `http://localhost:2288/adminRegister`,
+      const response = await api.post(
+        `/adminRegister`,
         formData
       );
       console.log("Registration Successful:", response.data);

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_URL = "https://e-commercewebsite-server.onrender.com";
+export const API_URL = "https://e-commerce-server-oj8e.onrender.com";
 
 const jwt = localStorage.getItem("jwt");
 

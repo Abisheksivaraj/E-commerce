@@ -2,6 +2,7 @@ import { Button, Grid, TextField, Typography, Box } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios for API requests
+import { api } from "../../config/apiConfig";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -24,8 +25,8 @@ const AdminLogin = () => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        `http://localhost:2288/adminLogin`, // Make sure this endpoint is correctly set up
+      const response = await api.post(
+        `/adminLogin`, // Make sure this endpoint is correctly set up
         formData
       );
       console.log("Login Successful:", response.data);
