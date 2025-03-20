@@ -6,15 +6,30 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://casual-lit-tees.onrender.com", // Specific origin is good
+    origin: "https://casual-lit-tees.onrender.com",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-// Remove this line as it's applying a different CORS policy (with wildcard origin)
-// app.options("*", cors());
+// If you actually have static files on this server that need serving
+// If not, you can remove this block
+app.use(
+  express.static("public", {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+      if (path.endsWith(".jpg") || path.endsWith(".jpeg")) {
+        res.setHeader("Content-Type", "image/jpeg");
+      }
+      if (path.endsWith(".png")) {
+        res.setHeader("Content-Type", "image/png");
+      }
+    },
+  })
+);
 
 app.get("/", (req, res) => {
   return res.status(200).send({ message: "Welcome" });
@@ -30,7 +45,6 @@ const Cart = require("./Routes/Cart");
 const CartItem = require("./Routes/CartItem");
 const AdminRoute = require("./Routes/AdminOrder");
 const AdminProductRoute = require("./Routes/AdminProduct");
-
 const PaymentRoute = require("./Routes/Payment");
 
 app.use(Cart);
