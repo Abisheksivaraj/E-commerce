@@ -1,10 +1,11 @@
+const path = require("path");
 const connectDb = require("./config/db");
 const app = require("./index");
-require("dotenv").config();
-const PORT = 2288
+require("dotenv").config({ path: "./server/.env" });
 
-app.listen(PORT,async()=>{
+const PORT = process.env.PORT; // or any other available port
+
+app.listen(PORT, async () => {
   await connectDb();
-  console.log("Website is Running on:"+PORT);
-  
-})
+  console.log("Website is Running on:" + PORT);
+});
