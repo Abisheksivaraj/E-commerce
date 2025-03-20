@@ -3,7 +3,7 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { Button, LinearProgress, Rating } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import ProductReview from "./productReview";
+import ProductReview from "../ProductDetails/ProductReview";
 import Box from "@mui/material/Box";
 import HomeSectionCard from "../../Pages/Homepage/HomeSectionCard";
 import { Mens_Kurta } from "../../../Data/HomePage_Datas/Mens_Kurta";
