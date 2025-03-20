@@ -6,13 +6,15 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "*", // Be specific about the origin instead of "*"
+    origin: "https://casual-lit-tees.onrender.com", // Specific origin is good
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
-app.options("*", cors());
+
+// Remove this line as it's applying a different CORS policy (with wildcard origin)
+// app.options("*", cors());
 
 app.get("/", (req, res) => {
   return res.status(200).send({ message: "Welcome" });
