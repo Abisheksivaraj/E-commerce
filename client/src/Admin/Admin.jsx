@@ -23,6 +23,9 @@ import Receipt from "@mui/icons-material/Receipt";
 import AddBox from "@mui/icons-material/AddBox";
 import Logout from "@mui/icons-material/Logout";
 import AdminRegister from "./Components/AdminRegister";
+import BannersPage from "./Components/BannerPage";
+import ImageIcon from "@mui/icons-material/Image"; // Icon for banners
+
 const menu = [
   {
     name: "Dashboard",
@@ -34,7 +37,11 @@ const menu = [
     path: "/admin/products",
     icon: <ProductionQuantityLimits style={{ color: "white" }} />,
   },
-
+  {
+    name: "Banners", // New Banner Button
+    path: "/admin/banners",
+    icon: <ImageIcon style={{ color: "white" }} />,
+  },
   {
     name: "Orders",
     path: "/admin/orders",
@@ -65,7 +72,6 @@ const Admin = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-
         height: "100%",
       }}
     >
@@ -110,13 +116,12 @@ const Admin = () => {
           <div className="w-[85%] ml-[16%]">
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
-
               <Route path="/product/create" element={<CreateProducts />} />
-
               <Route path="/orders" element={<OrdersTable />} />
-          
               <Route path="/products" element={<ProductsTable />} />
               <Route path="/adminRegister" element={<AdminRegister />} />
+              <Route path="/banners" element={<BannersPage />} />{" "}
+              {/* New Route */}
             </Routes>
           </div>
         </CssBaseline>

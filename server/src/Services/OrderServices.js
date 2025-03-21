@@ -4,7 +4,7 @@ const Order = require("../models/OrderModals");
 const OrderItem = require("../models/OrderItemsModals");
 const cartService = require("./CartServices");
 
-async function createOrder(user, shippingAddress) {
+async function createOrder(user, shippingAddress ) {
   let address;
 
   // Handle shipping address
@@ -14,6 +14,8 @@ async function createOrder(user, shippingAddress) {
   } else {
     address = new Address(shippingAddress);
     address.user = user;
+    address.email = user.email; 
+
     await address.save();
     user.address.push(address);
     await user.save();

@@ -3,10 +3,13 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(express.json());
+// Increase the JSON payload size limit to 50MB
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 app.use(
   cors({
-    origin: "https://casual-lit-tees.onrender.com",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -46,6 +49,7 @@ const CartItem = require("./Routes/CartItem");
 const AdminRoute = require("./Routes/AdminOrder");
 const AdminProductRoute = require("./Routes/AdminProduct");
 const PaymentRoute = require("./Routes/Payment");
+const BannerRoute = require("./Routes/Banner");
 
 app.use(Cart);
 app.use(CartItem);
@@ -58,5 +62,6 @@ app.use(ProductRoute);
 app.use(AuthRoutes);
 app.use(UserRoutes);
 app.use(PaymentRoute);
+app.use(BannerRoute);
 
 module.exports = app;
