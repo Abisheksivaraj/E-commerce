@@ -31,12 +31,15 @@ const addressSchema = new mongoose.Schema({
   },
   country: {
     type: String,
-    // required: true,
-    // trim: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
   },
   MobileNumber: {
     type: Number,

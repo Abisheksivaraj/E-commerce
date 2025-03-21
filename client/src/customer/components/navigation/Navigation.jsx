@@ -125,7 +125,7 @@ export default function Navigation() {
                       className="w-full border border-gray-300 p-2 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Search..."
                     />
-                    <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#190758] text-white px-2 py-1 rounded-lg hover:bg-[#290f89] focus:outline-none">
+                    <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#a35a8f] text-white px-2 py-1 rounded-lg hover:bg-[#a35a8f] focus:outline-none">
                       <MagnifyingGlassIcon
                         className="h-5 w-5 text-white"
                         aria-hidden="true"
@@ -284,7 +284,7 @@ export default function Navigation() {
       </Transition.Root>
 
       <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-[#a15b8f] px-4 text-sm md:text-md font-bold text-white sm:px-6 lg:px-8">
+        <p className="flex h-10 items-center justify-center bg-[#a35a8f] px-4 text-sm md:text-md font-bold text-white sm:px-6 lg:px-8">
           Your favorite products, delivered with love
         </p>
 
@@ -452,7 +452,7 @@ export default function Navigation() {
                       className="w-full border border-gray-300 p-2 pl-4 pr-16 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Search..."
                     />
-                    <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#190758] text-white px-4 py-1 rounded-lg hover:bg-[#290f89] focus:outline-none">
+                    <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#a15b8f] text-white px-4 py-1 rounded-lg hover:bg-[#a35a8f] focus:outline-none">
                       <MagnifyingGlassIcon
                         className="h-5 w-5 text-white"
                         aria-hidden="true"
@@ -488,7 +488,7 @@ export default function Navigation() {
                     />
                     {/* Badge for Product Count */}
                     <div className="absolute bottom-6 right-1">
-                      <span className="bg-[#190758] text-white rounded-full text-xs font-medium flex items-center justify-center h-4 w-4 md:h-5 md:w-5">
+                      <span className="bg-[#a15b8f] text-white rounded-full text-xs font-medium flex items-center justify-center h-4 w-4 md:h-5 md:w-5">
                         {cart.cart?.totalItem || 0}
                       </span>
                     </div>
@@ -506,7 +506,7 @@ export default function Navigation() {
                         aria-haspopup="true"
                         aria-expanded={openUserMenu ? "true" : undefined}
                         sx={{
-                          bgcolor: "#190758",
+                          bgcolor: "#a35a8f",
                           color: "white",
                           cursor: "pointer",
                         }}
@@ -523,7 +523,9 @@ export default function Navigation() {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem>Profile</MenuItem>
+                        <MenuItem onClick={() => navigate("/profile")}>
+                          Profile
+                        </MenuItem>
                         <MenuItem onClick={() => navigate("/account/order")}>
                           My Orders
                         </MenuItem>
@@ -562,7 +564,7 @@ export default function Navigation() {
                   placeholder="Search..."
                   autoFocus
                 />
-                <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#190758] text-white px-2 py-1 rounded-lg hover:bg-[#290f89] focus:outline-none">
+                <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-[#a35a8f] text-white px-2 py-1 rounded-lg hover:bg-[#a35a8f] focus:outline-none">
                   <MagnifyingGlassIcon
                     className="h-5 w-5 text-white"
                     aria-hidden="true"
