@@ -8,6 +8,9 @@ import womens from "../../../assets/HomeCarousal/womens.jpg";
 import shoe from "../../../assets/HomeCarousal/shoe.jpg";
 import gadgets from "../../../assets/HomeCarousal/gadjets.png";
 
+// Use an environment variable or relative URL instead of hardcoded localhost
+const API_BASE_URL = "https://e-commerce-server-oj8e.onrender.com" || "/api"; // Fallback to relative path
+
 const HomePageCarousel = () => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,11 +32,11 @@ const HomePageCarousel = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        // Use the full URL to your backend API
-        const response = await axios.get("http://localhost:2288/banners");
+        // Use the configurable base URL instead of hardcoded localhost
+        const response = await axios.get(`${API_BASE_URL}/banners`);
         console.log("Banner response:", response.data);
 
-        if (Array.isArray(response.data)) {
+        if (Array.isArray(response.data) && response.data.length > 0) {
           // Notice we're now handling both image and imageUrl properties
           const processedBanners = response.data.map((banner) => ({
             ...banner,
@@ -42,14 +45,17 @@ const HomePageCarousel = () => {
           }));
           setBanners(processedBanners);
         } else {
-          // Fallback to static images if API fails
+          // Fallback to static images if API returns empty array
+          console.log(
+            "API returned empty array, using static banners as fallback"
+          );
           const staticBanners = getStaticBanners();
           setBanners(staticBanners);
-          console.log("Using static banners as fallback");
         }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching banners:", error);
+        console.log("Network error, using static banners as fallback");
 
         // Fallback to static banners on error
         const staticBanners = getStaticBanners();
