@@ -10,6 +10,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
       origin: "https://casual-lit-tees.onrender.com",
+      // origin:"http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

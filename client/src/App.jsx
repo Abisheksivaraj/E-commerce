@@ -2,12 +2,13 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import CustomerRouter from "./customer/Router/CustomerRouter";
 import AdminRouter from "../src/customer/Router/AdminRouter";
+import AdminLogin from "./Admin/Components/AdminLogin";
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/*" element={<CustomerRouter />} />
-        <Route path="/admin/*" element={<AdminRouter/>} />
+        <Route path="/admin/*" element={<AdminLogin/>} />
       </Routes>
     </div>
   );

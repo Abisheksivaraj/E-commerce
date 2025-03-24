@@ -1,29 +1,13 @@
-import {
-  Button,
-  Grid,
-  TextField,
-  Box,
-  Typography,
-  Container,
-  Paper,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getUser, register } from "../../State/StateAuth/Action";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { register } from "../../State/StateAuth/Action";
+import logo from "../../assets/elakiya.png";
 
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
-  const { auth } = useSelector((store) => store.auth);
-  const theme = useTheme();
-
-  // Multiple breakpoints for better responsiveness
-  const isXsScreen = useMediaQuery(theme.breakpoints.down("xs"));
-  const isSmScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   // Form validation states
   const [formErrors, setFormErrors] = useState({
@@ -41,11 +25,16 @@ const Register = () => {
     password: "",
   });
 
-  useEffect(() => {
-    if (jwt) {
-      dispatch(getUser());
-    }
-  }, [jwt, auth?.jwt, dispatch]);
+  // Password visibility state
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Colors from the original design
+  const colors = {
+    primaryMain: "#c776af",
+    primaryLight: "#e5a7d3",
+    primaryDark: "#9c4d7d",
+    secondary: "#8b6240",
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,131 +100,152 @@ const Register = () => {
   };
 
   return (
-    <Container maxWidth="sm" className="py-4 md:py-8 lg:py-12">
-      <Paper
-        elevation={isMdScreen ? 3 : 6}
-        className="overflow-hidden transition-all duration-300"
-      >
-        <Box className="max-w-full mx-auto p-4 sm:p-6 md:p-8 rounded-lg bg-white">
-          <Typography
-            variant={isSmScreen ? "h5" : "h4"}
-            component="h1"
-            className="text-center font-bold mb-4 md:mb-6"
+    <div>
+      <div className="w-full max-w-md rounded-xl shadow-2xl overflow-hidden">
+        {/* Logo and Header Section */}
+        <div className="bg-gradient-to-r from-pink-100 to-pink-200 text-center h-[14rem] flex flex-col items-center justify-center">
+          <img src={logo} alt="" className="h-[10rem] w-auto mb-1" />
+
+          <h1
+            className="text-2xl font-bold"
+            style={{ color: colors.primaryDark }}
           >
             Register
-          </Typography>
+          </h1>
+          <p className="text-sm italic text-gray-600 mt-0.5">
+            Embrace Effortless Elegance
+          </p>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Grid container spacing={isSmScreen ? 2 : 3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="firstName"
-                  name="firstName"
-                  label="First Name"
-                  fullWidth
-                  autoComplete="given-name"
-                  variant="outlined"
-                  className="bg-white rounded-lg"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  error={formErrors.firstName}
-                  helperText={
-                    formErrors.firstName ? "First name is required" : ""
-                  }
-                  size={isSmScreen ? "small" : "medium"}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="lastName"
-                  name="lastName"
-                  label="Last Name"
-                  fullWidth
-                  autoComplete="family-name"
-                  variant="outlined"
-                  className="bg-white rounded-lg"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  error={formErrors.lastName}
-                  helperText={
-                    formErrors.lastName ? "Last name is required" : ""
-                  }
-                  size={isSmScreen ? "small" : "medium"}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  id="email"
-                  name="email"
-                  label="E-mail"
-                  fullWidth
-                  autoComplete="email"
-                  variant="outlined"
-                  className="bg-white rounded-lg"
-                  value={formData.email}
-                  onChange={handleChange}
-                  error={formErrors.email}
-                  helperText={formErrors.email ? "Valid email is required" : ""}
-                  size={isSmScreen ? "small" : "medium"}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  id="password"
-                  name="password"
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  autoComplete="new-password"
-                  variant="outlined"
-                  className="bg-white rounded-lg"
-                  value={formData.password}
-                  onChange={handleChange}
-                  error={formErrors.password}
-                  helperText={
-                    formErrors.password
-                      ? "Password must be at least 6 characters"
-                      : ""
-                  }
-                  size={isSmScreen ? "small" : "medium"}
-                />
-              </Grid>
-              <Grid item xs={12} className="flex justify-center">
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={`w-full ${
-                    isSmScreen ? "py-2" : "sm:w-auto py-3"
-                  } px-4 sm:px-6 rounded-full 
-                  shadow-md hover:shadow-xl active:translate-y-1 bg-blue-700 text-white 
-                  transition-all duration-300`}
-                  size={isSmScreen ? "medium" : "large"}
-                >
-                  Register
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+        {/* Rest of the code remains the same */}
+        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-2 space-y-2">
+          {/* Form inputs remain unchanged */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  formErrors.firstName
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-pink-200"
+                }`}
+                placeholder="Enter first name"
+              />
+              {formErrors.firstName && (
+                <p className="text-red-500 text-xs mt-1">
+                  First name is required
+                </p>
+              )}
+            </div>
+            {/* Rest of the form remains the same */}
+            <div>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  formErrors.lastName
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-pink-200"
+                }`}
+                placeholder="Enter last name"
+              />
+              {formErrors.lastName && (
+                <p className="text-red-500 text-xs mt-1">
+                  Last name is required
+                </p>
+              )}
+            </div>
+          </div>
 
-          <Box className="mt-4 pt-2 text-center flex flex-col sm:flex-row justify-center items-center gap-2">
-            <Typography variant="body2" className="text-gray-600">
-              Already have an account?
-            </Typography>
-            <Button
-              onClick={() => navigate("/login")}
-              size={isSmScreen ? "small" : "medium"}
-              className="text-blue-600 min-w-0 p-1"
-            >
-              Login
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Container>
+          {/* Remaining form elements stay the same */}
+          <div>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                formErrors.email
+                  ? "border-red-500 focus:ring-red-200"
+                  : "border-gray-300 focus:ring-pink-200"
+              }`}
+              placeholder="Enter email address"
+            />
+            {formErrors.email && (
+              <p className="text-red-500 text-xs mt-1">
+                Valid email is required
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 pr-10 ${
+                  formErrors.password
+                    ? "border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:ring-pink-200"
+                }`}
+                placeholder="Create a password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 px-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff size={20} className="text-gray-500" />
+                ) : (
+                  <Eye size={20} className="text-gray-500" />
+                )}
+              </button>
+            </div>
+            {formErrors.password && (
+              <p className="text-red-500 text-xs mt-1">
+                Password must be at least 6 characters
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 rounded-md font-semibold text-white transition-colors duration-300 ease-in-out"
+            style={{
+              backgroundColor: colors.primaryMain,
+              "&:hover": { backgroundColor: colors.primaryDark },
+            }}
+          >
+            Create Account
+          </button>
+
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-600">
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="text-pink-600 hover:underline font-semibold"
+              >
+                Log in
+              </button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
