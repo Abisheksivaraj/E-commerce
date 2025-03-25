@@ -41,16 +41,24 @@ const CartItem = ({ item }) => {
           <p className="opacity-70 text-sm">Size:{item.size}, White</p>
           <p className="opacity-70 text-sm">Seller: {item.product.brand}</p>
 
-          <div className="flex items-center gap-3 pt-4">
-            <p className="text-xl font-semibold text-green-600">
-              ₹{item.price}
-            </p>
-            <p className="line-through text-gray-500 opacity-60">
-              ₹{item.discountedPrice}
-            </p>
-            <p className="text-[green] font-medium">
-              {item.discountPercent}% off
-            </p>
+          <div className="flex items-center flex-col gap-3 pt-4">
+            <div className="flex flex-row items-center gap-2">
+              {" "}
+              <p className="text-xl  font-semibold text-red-400">
+                -{item.product.discountPercent}%
+              </p>
+              <p className=" text-gray-900 font-bold opacity-60">
+                ₹{item.discountedPrice}
+              </p>
+              <p className="text-[green] font-medium">{item.discountPercent}</p>
+            </div>
+
+            <div className="flex flex-row gap-2 items-center">
+              <p className="text-gray-500 font-bold">M.R.P:</p>
+              <p className="text-xl line-through font-medium text-gray-400">
+                ₹{item.price}
+              </p>
+            </div>
           </div>
         </div>
       </div>

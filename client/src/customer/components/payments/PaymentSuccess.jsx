@@ -9,26 +9,29 @@ import SavedAddress from "../address/SavedAddress";
 
 const PaymentSuccess = () => {
   const [paymentId, setPaymentId] = useState();
+  const [referenceId, setReferenceId] = useState();
   const [paymentStatus, setPaymentStatus] = useState();
   const { orderId } = useParams();
 
   const dispatch = useDispatch();
-  const { order } = useSelector((store) => store.order);
-  console.log("order", order.order);
+  const { order } = useSelector((store) => store);
 
   useEffect(() => {
     const urlParam = new URLSearchParams(window.location.search);
-    setPaymentId(urlParam.get("razorpay_payment_id"));
-    setPaymentStatus(urlParam.get("razorpay_payment_link_status"));
-  }, []);
+    const paymentId = urlParam.get("razorpay_payment_id");
+    const paymentStatus = urlParam.get("razorpay_payment_link_status");
 
-  useEffect(() => {
-    if (paymentId) {
-      const data = { orderId, paymentId };
+    setPaymentId(paymentId);
+    setPaymentStatus(paymentStatus);
+
+    if (paymentId && orderId) {
       dispatch(getOrderById(orderId));
-      dispatch(updatePayment(data));
+      dispatch(updatePayment({ orderId, paymentId })).catch((error) => {
+        // Handle payment update error
+        console.error("Payment update failed:", error);
+      });
     }
-  }, [orderId, paymentId, dispatch]);
+  }, [orderId, dispatch]);
 
   return (
     <div className="px-2 lg:px-36">

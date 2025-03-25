@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SavedAddress from "./SavedAddress";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../../../State/Order/Action";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Box, Typography, Grid } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Grid,
+  CircularProgress,
+} from "@mui/material";
+import { api } from "../../../config/apiConfig";
 
 const AddressForm = () => {
   const { auth } = useSelector((store) => store);
@@ -20,6 +28,40 @@ const AddressForm = () => {
     postalCode: "",
   });
 
+  // State for saved addresses
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch user addresses when component mounts
+  useEffect(() => {
+    const fetchUserAddresses = async () => {
+      // Ensure user is authenticated
+      if (!auth.user) return;
+
+      setIsLoading(true);
+      try {
+        const response = await api.get("/userAddress");
+
+        // Ensure savedAddresses is an array
+        const addressData = Array.isArray(response.data)
+          ? response.data
+          : response.data.addresses || [];
+
+        setSavedAddresses(addressData);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching addresses:", err);
+        setError(err.response?.data?.message || "Failed to fetch addresses");
+        setSavedAddresses([]); // Ensure it's an array even on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserAddresses();
+  }, [auth.user]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,18 +74,80 @@ const AddressForm = () => {
     dispatch(createOrder(orderData));
   };
 
+  const handleSelectAddress = (address) => {
+    setFormData({
+      firstName: address.firstName || "",
+      lastName: address.lastName || "",
+      street: address.street || "",
+      city: address.city || "",
+      state: address.state || "",
+      postalCode: address.postalCode || "",
+      MobileNumber: address.MobileNumber || "",
+    });
+  };
+
   return (
     <Box display="flex" justifyContent="space-between" gap={4} p={4}>
       {/* Saved Address Section */}
-      <Box flex={1} p={3} bgcolor="white" borderRadius={2} boxShadow={2}>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          bgcolor: "white",
+          borderRadius: 2,
+          boxShadow: 2,
+          padding: 2,
+          maxWidth: "40%",
+        }}
+      >
         <Typography variant="h6" gutterBottom>
-          Saved Address
+          Saved Addresses
         </Typography>
-        <Box maxHeight={400} overflow="auto">
-          {auth.user?.address.map((item, index) => (
-            <SavedAddress key={index} address={item} />
-          ))}
-        </Box>
+        {isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexGrow: 1,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Typography color="error">{error}</Typography>
+        ) : savedAddresses.length === 0 ? (
+          <Typography variant="body2">No saved addresses</Typography>
+        ) : (
+          <Box
+            sx={{
+              overflowY: "auto",
+              height: "100%",
+            }}
+          >
+            {savedAddresses.map((address, index) => (
+              <Box
+                key={index}
+                onClick={() => handleSelectAddress(address)}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "rgba(0,0,0,0.05)",
+                  },
+                }}
+              >
+                <SavedAddress address={address} />
+              </Box>
+            ))}
+            <Button sx={{ mt: 2, bgcolor: "#a35a8f", color: "white" }}>
+              Deliver Here
+            </Button>
+          </Box>
+        )}
+        <Button sx={{ mt: 2, bgcolor: "#a35a8f", color: "white" }}>
+          Deliver Here
+        </Button>
       </Box>
 
       {/* Delivery Address Form */}

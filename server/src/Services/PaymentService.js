@@ -1,66 +1,90 @@
+// PaymentService.js
 const razorpay = require("../config/razorpayClient.js");
-
 const orderService = require("../Services/OrderServices.js");
 
 const createPaymentLink = async (orderId) => {
   try {
+    // Validate orderId
+    if (!orderId) {
+      throw new Error("Order ID is required");
+    }
+
     const order = await orderService.findOrderById(orderId);
 
+    // Validate order
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
     const paymentLinkRequest = {
-      amount: order.totalPrice * 100,
+      amount: Math.round(order.totalPrice * 100), // Ensure integer amount in paise
       currency: "INR",
       customer: {
-        name: order.user.firstName + " " + order.user.lastName,
+        name: `${order.user.firstName} ${order.user.lastName}`.trim(),
         contact: order.user.mobile,
         email: order.user.email,
       },
-
       notify: {
         sms: true,
         email: true,
       },
-      remainder_enable: true,
-      callback_url: `http://localhost:3000/payment/${orderId}`,
+      reminder_enable: true, // Corrected key name
+      callback_url: `http://localhost:2288/payment/${orderId}`, // Added a typical port
       callback_method: "get",
     };
 
     const paymentLink = await razorpay.paymentLink.create(paymentLinkRequest);
 
-    const paymentLinkId = paymentLink.id;
-    const payment_link_url = paymentLink.short_url;
-
-    const resData = {
-      paymentLinkId,
-      payment_link_url,
+    return {
+      paymentLinkId: paymentLink.id,
+      payment_link_url: paymentLink.short_url,
     };
-
-    return resData;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error creating payment link:", error);
+    throw new Error(`Failed to create payment link: ${error.message}`);
   }
 };
 
 const updatePaymentInformation = async (reqData) => {
-  const paymentId = reqData.payment_id;
-  const orderId = reqData.order_id;
   try {
+    const { payment_id: paymentId, order_id: orderId } = reqData;
+
+    // Validate input
+    if (!paymentId || !orderId) {
+      throw new Error("Payment ID and Order ID are required");
+    }
+
     const order = await orderService.findOrderById(orderId);
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
 
     const payment = await razorpay.payments.fetch(paymentId);
 
-    if (payment.status == "captured") {
-      order.paymentDetails.paymentId = paymentId;
-      order.paymentDetails.status = "COMPLETED";
+    if (payment.status === "captured") {
+      order.paymentDetails = {
+        paymentId,
+        status: "COMPLETED",
+      };
       order.orderStatus = "PLACED";
+
       await order.save();
+
+      return {
+        message: "Your Order is Placed",
+        success: true,
+      };
+    } else {
+      throw new Error("Payment not captured");
     }
-
-    const resData = { message: "Your Order is Placed", success: true };
-
-    return resData;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error updating payment information:", error);
+    throw new Error(`Failed to update payment: ${error.message}`);
   }
 };
 
-module.exports = { createPaymentLink,  updatePaymentInformation };
+module.exports = {
+  createPaymentLink,
+  updatePaymentInformation,
+};

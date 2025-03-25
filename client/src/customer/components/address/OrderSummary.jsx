@@ -34,8 +34,9 @@ const OrderSummary = () => {
           <div className="container mx-auto lg:grid lg:grid-cols-3 lg:px-16 relative">
             {/* Cart Items Section */}
             <div className="col-span-2 bg-white p-6 rounded-lg shadow-md grid gap-4">
+             
               {order.order?.orderItems.map((item) => (
-                <CartItem item={{ item }} />
+                <CartItem key={item.id} item={item} />
               ))}
             </div>
 

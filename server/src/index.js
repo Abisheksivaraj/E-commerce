@@ -51,7 +51,7 @@ const AdminRoute = require("./Routes/AdminOrder");
 const AdminProductRoute = require("./Routes/AdminProduct");
 const PaymentRoute = require("./Routes/Payment");
 const BannerRoute = require("./Routes/Banner");
-
+const AddressRoute = require("./Routes/AddressRoute");
 app.use(Cart);
 app.use(CartItem);
 app.use(RatingRoute);
@@ -64,5 +64,6 @@ app.use(AuthRoutes);
 app.use(UserRoutes);
 app.use(PaymentRoute);
 app.use(BannerRoute);
+app.use(AddressRoute);
 
 module.exports = app;

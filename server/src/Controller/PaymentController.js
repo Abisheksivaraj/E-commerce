@@ -1,25 +1,49 @@
-const paymentService = require("../Services/PaymentService.js");
+const payment = require("../Services/PaymentService");
 
 const createPaymentLink = async (req, res) => {
   try {
-    const paymentLink = await paymentService.createPaymentLink(req.params.id);
-    console.log("paymentLink", paymentLink);
+    const { id: orderId } = req.params;
 
-    return res.status(200).send(paymentLink);
+    if (!orderId) {
+      return res.status(400).json({
+        message: "Order ID is required",
+        success: false,
+      });
+    }
+
+    const paymentLink = await payment.createPaymentLink(orderId);
+
+    return res.status(200).json({
+      paymentLink,
+      success: true,
+    });
   } catch (error) {
-    return res.status(500).send(error.message);
+    console.error("Payment link creation error:", error);
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
   }
 };
 
 const updatePaymentInformation = async (req, res) => {
   try {
-    await paymentService.updatePaymentInformation(req.query);
-    return res
-      .status(200)
-      .send({ message: "payment information updated", status: true });
+    await payment.updatePaymentInformation(req.query);
+
+    return res.status(200).json({
+      message: "Payment information updated",
+      success: true,
+    });
   } catch (error) {
-    return res.status(500).send(error.message);
+    console.error("Payment update error:", error);
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
   }
 };
 
-module.exports = { createPaymentLink, updatePaymentInformation };
+module.exports = {
+  createPaymentLink,
+  updatePaymentInformation,
+};
