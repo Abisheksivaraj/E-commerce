@@ -21,21 +21,21 @@ const Products = {
     { id: 1, name: "Men", href: "#" },
     { id: 2, name: "Clothing", href: "#" },
   ],
-  images: [
+  image: [
     {
-      src: "https://tailwindui.com/plus/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
+      src: "https://veirdo.in/cdn/shop/files/54_1.jpg?v=1723446311",
       alt: "Two each of gray, white, and black shirts laying flat.",
     },
     {
-      src: "https://tailwindui.com/plus/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
+      src: "https://img-c.udemycdn.com/course/750x422/5444528_d4e3_5.jpg",
       alt: "Model wearing plain black basic tee.",
     },
     {
-      src: "https://tailwindui.com/plus/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
+      src: "https://veirdo.in/cdn/shop/files/ai_creative_0000_Layer_6.jpg?v=1736570574",
       alt: "Model wearing plain gray basic tee.",
     },
     {
-      src: "https://tailwindui.com/plus/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
+      src: "https://veirdo.in/cdn/shop/files/b_0119493a-9927-4550-8323-baefe5f625c0.jpg?v=1724147309",
       alt: "Model wearing plain white basic tee.",
     },
   ],
@@ -141,28 +141,28 @@ export default function productDetails() {
             {/* First Image */}
             <img
               src={product.product?.image}
-              alt={Products.images[0]?.src}
+              alt={Products.image[0]?.src}
               className="hidden aspect-[3/4] size-full rounded-lg object-cover lg:block"
             />
 
             {/* Second and Third Images */}
             <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
               <img
-                alt={Products.images[1]?.alt}
-                src={Products.images[1]?.src}
+                alt={Products.image[1]?.alt}
+                src={product.product?.image2}
                 className="aspect-[3/2] size-full rounded-lg object-cover"
               />
               <img
-                alt={Products.images[2]?.alt}
-                src={Products.images[2]?.src}
+                alt={Products.image[2]?.alt}
+                src={product.product?.image3}
                 className="aspect-[3/2] size-full rounded-lg object-cover"
               />
             </div>
 
             {/* Fourth Image */}
             <img
-              alt={Products.images[3]?.alt}
-              src={Products.images[3]?.src}
+              alt={Products.image[3]?.alt}
+              src={product.product?.image4}
               className="aspect-[4/5] size-full object-cover sm:rounded-lg lg:aspect-[3/4]"
             />
           </div>
@@ -314,20 +314,20 @@ export default function productDetails() {
                     width: "100%",
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: "8px", 
+                    borderRadius: "8px",
                     border: "1px solid transparent",
                     backgroundColor: "indigo.600",
                     px: 8,
                     py: 3,
-                    fontSize: "1rem", 
-                    fontWeight: "500", 
+                    fontSize: "1rem",
+                    fontWeight: "500",
                     color: "white",
                     "&:hover": {
                       backgroundColor: "indigo.700",
                     },
                     "&:focus": {
                       outline: "none",
-                      ring: 2, 
+                      ring: 2,
                       ringColor: "indigo.500",
                       ringOffset: 2,
                     },

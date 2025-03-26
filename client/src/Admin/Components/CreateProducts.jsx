@@ -13,7 +13,12 @@ import {
   Typography,
   Box,
   Paper,
+  Container,
+  Divider,
 } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { styled } from "@mui/material/styles";
 
 const initialSizes = [
   { name: "S", quantity: 0 },
@@ -23,9 +28,32 @@ const initialSizes = [
   { name: "XXL", quantity: 0 },
 ];
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
 const CreateProducts = () => {
   const [productData, setProductData] = useState({
-    image: "",
+    images: {
+      image: null,
+      image2: null,
+      image3: null,
+      image4: null,
+    },
+    imagePreview: {
+      image: null,
+      image2: null,
+      image3: null,
+      image4: null,
+    },
     brand: "",
     title: "",
     color: "",
@@ -51,19 +79,50 @@ const CreateProducts = () => {
       discountPercent = parseFloat(value) || 0;
     }
 
-    
     const discountedPrice = price - (price * discountPercent) / 100;
 
-    
     setProductData((prevData) => ({
       ...prevData,
-      discountedPrice: discountedPrice.toFixed(2), // Format to 2 decimal places
+      discountedPrice: discountedPrice.toFixed(2),
     }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleImageUpload = (e) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      const file = files[0];
+
+      // Validate file type and size
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        alert("Please upload a valid image (JPEG, PNG, or WebP)");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        alert("File size should be less than 5MB");
+        return;
+      }
+
+      setProductData((prevData) => ({
+        ...prevData,
+        images: {
+          ...prevData.images,
+          [name]: file,
+        },
+        imagePreview: {
+          ...prevData.imagePreview,
+          [name]: URL.createObjectURL(file),
+        },
+      }));
+    }
   };
 
   const handleSizeChange = (e, index) => {
@@ -73,34 +132,124 @@ const CreateProducts = () => {
     setProductData((prevData) => ({ ...prevData, size: sizes }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createProduct(productData));
-    console.log(productData);
+
+    // Create FormData for file upload
+    const formData = new FormData();
+
+    // Append all product data
+    Object.keys(productData).forEach((key) => {
+      if (key !== "images" && key !== "imagePreview") {
+        if (key === "size") {
+          // Convert size array to JSON string
+          formData.append(key, JSON.stringify(productData[key]));
+        } else {
+          formData.append(key, productData[key]);
+        }
+      }
+    });
+
+    // Append image files
+    Object.keys(productData.images).forEach((key) => {
+      if (productData.images[key]) {
+        formData.append(key, productData.images[key]);
+      }
+    });
+
+    try {
+      // Dispatch action with FormData
+      await dispatch(createProduct(formData));
+
+      // Optional: Reset form or show success message
+      alert("Product created successfully!");
+    } catch (error) {
+      console.error("Product creation failed:", error);
+      alert("Failed to create product");
+    }
   };
 
   return (
-    <div className="w-[65rem]">
-      
-        <Typography variant="h4" align="center" gutterBottom>
-          Add New Product
-        </Typography>
+    <Container maxWidth="lg">
+      <Box
+        sx={{
+          backgroundColor: "#f4f6f9",
+          minHeight: "100vh",
+          py: 4,
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            backgroundColor: "white",
+          }}
+        >
+          <Typography
+            variant="h4"
+            color="primary"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold", mb: 4 }}
+          >
+            Create New Product
+          </Typography>
 
-        <Box component={Paper} elevation={3} p={4} m={4} borderRadius={2} >
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <Grid container spacing={4}>
+              {/* Image Upload Sections */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Image URL"
-                  name="image"
-                  value={productData.image}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  Product Images
+                </Typography>
+                <Grid container spacing={2}>
+                  {["image", "image2", "image3", "image4"].map((imageName) => (
+                    <Grid item xs={12} sm={3} key={imageName}>
+                      <Button
+                        component="label"
+                        variant="outlined"
+                        startIcon={<CloudUploadIcon />}
+                        fullWidth
+                        sx={{
+                          height: 200,
+                          borderStyle: "dashed",
+                          borderColor: productData.imagePreview[imageName]
+                            ? "primary.main"
+                            : "grey.400",
+                        }}
+                      >
+                        {productData.imagePreview[imageName] ? (
+                          <img
+                            src={productData.imagePreview[imageName]}
+                            alt={`Preview ${imageName}`}
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          `Upload ${imageName.charAt(0).toUpperCase() + imageName.slice(1)}`
+                        )}
+                        <VisuallyHiddenInput
+                          type="file"
+                          name={imageName}
+                          accept="image/jpeg,image/png,image/webp"
+                          onChange={handleImageUpload}
+                        />
+                      </Button>
+                    </Grid>
+                  ))}
+                </Grid>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }} />
+              </Grid>
+
+              {/* Product Details */}
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label="Brand"
@@ -111,7 +260,7 @@ const CreateProducts = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label="Title"
@@ -122,24 +271,12 @@ const CreateProducts = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label="Color"
                   name="color"
                   value={productData.color}
-                  onChange={handleChange}
-                  variant="outlined"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Quantity"
-                  name="quantity"
-                  type="number"
-                  value={productData.quantity}
                   onChange={handleChange}
                   variant="outlined"
                 />
@@ -178,17 +315,18 @@ const CreateProducts = () => {
               <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
-                  label="Discount Price"
+                  label="Discounted Price"
                   name="discountedPrice"
                   type="number"
                   value={productData.discountedPrice}
                   variant="outlined"
                   InputProps={{
-                    readOnly: true, // Make the field read-only
+                    readOnly: true,
                   }}
                 />
               </Grid>
 
+              {/* Category Selects */}
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth variant="outlined">
                   <InputLabel>Top Level Category</InputLabel>
@@ -240,6 +378,7 @@ const CreateProducts = () => {
                 </FormControl>
               </Grid>
 
+              {/* Description */}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -253,11 +392,12 @@ const CreateProducts = () => {
                 />
               </Grid>
 
+              {/* Size and Quantity */}
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
                   Size and Quantity
                 </Typography>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                   {productData.size.map((size, index) => (
                     <Fragment key={index}>
                       <Grid item xs={6} sm={6}>
@@ -287,22 +427,29 @@ const CreateProducts = () => {
                 </Grid>
               </Grid>
 
+              {/* Submit Button */}
               <Grid item xs={12} mt={2}>
                 <Button
                   variant="contained"
                   color="primary"
                   size="large"
                   fullWidth
+                  startIcon={<AddCircleOutlineIcon />}
                   type="submit"
+                  sx={{
+                    py: 1.5,
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
                 >
-                  Add New Product
+                  Create Product
                 </Button>
               </Grid>
             </Grid>
           </form>
-        </Box>
-     
-    </div>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

@@ -2,13 +2,12 @@ const Category = require("../models/CategoryModals");
 const Products = require("../models/ProductModals");
 
 async function createProduct(reqData) {
-  // Find or create top-level category
   let topLevel = await Category.findOne({ name: reqData.topLevelCategory });
   if (!topLevel) {
     topLevel = new Category({
       name: reqData.topLevelCategory,
       level: 1,
-    })
+    });
     await topLevel.save();
   }
 
@@ -22,7 +21,7 @@ async function createProduct(reqData) {
       name: reqData.secondLevelCategory,
       parentCategory: topLevel._id,
       level: 2,
-    })
+    });
     await secondLevel.save();
   }
 
@@ -36,7 +35,7 @@ async function createProduct(reqData) {
       name: reqData.thirdLevelCategory,
       parentCategory: secondLevel._id,
       level: 3,
-    })
+    });
     await thirdLevel.save();
   }
 
@@ -48,6 +47,9 @@ async function createProduct(reqData) {
     color: reqData.color,
     size: reqData.size,
     image: reqData.image,
+    image2: reqData.image2,
+    image3: reqData.image3,
+    image4: reqData.image4,
     category: thirdLevel._id,
     brand: reqData.brand,
     discountedPrice: reqData.discountedPrice,
@@ -170,7 +172,6 @@ async function getAllProducts(reqQuery) {
   const totalPages = Math.ceil(totalProducts / pageSize);
   return { content: products, currentPage: pageNumber, totalPages };
 }
-
 
 async function createMultipleProducts(products) {
   for (let product of products) {

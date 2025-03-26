@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const productSchema = new mongoose.Schema({
   title: {
@@ -42,7 +43,20 @@ const productSchema = new mongoose.Schema({
     },
   ],
   image: {
+    type: String, // base64 is stored as a string
+    required: false,
+  },
+  image2: {
     type: String,
+    required: false,
+  },
+  image3: {
+    type: String,
+    required: false,
+  },
+  image4: {
+    type: String,
+    required: false,
   },
   ratings: [
     {
